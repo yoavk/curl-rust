@@ -32,8 +32,12 @@ features = ["client_apis", "error_strings", "tls13", "aesgcm", "chachapoly", "x2
 [target.'cfg(all(unix, not(target_os = "macos")))'.dependencies]
 openssl-sys = { version = "0.9", optional = true }
 
-[target.'cfg(windows)'.dependencies]
+[target.'cfg(all(windows, not(feature= "static-ssl")))'.dependencies]
 winapi = { version = "0.3", features = ["winsock2", "ws2def"] }
+
+[target.'cfg(all(windows, feature = "static-ssl"))'.dependencies]
+openssl-sys = { version = "0.9"}
+
 
 [target.'cfg(target_env = "msvc")'.build-dependencies]
 vcpkg = "0.2"
@@ -41,12 +45,14 @@ vcpkg = "0.2"
 [build-dependencies]
 pkg-config = "0.3.3"
 cc = "1.0"
+openssl-src = { version = "111.0.1" }
+
 
 [features]
 default = ["ssl"]
 ssl = ["openssl-sys"]
 http2 = ["libnghttp2-sys"]
 static-curl = []
-static-ssl = ["openssl-sys/vendored"]
+static-ssl = []
 spnego = []
 force-system-lib-on-osx = []
