@@ -273,6 +273,8 @@ fn main() {
                     .file("curl/lib/vtls/schannel_verify.c");
             } else {
                 cfg.define("USE_OPENSSL", None)
+                    .define("_WIN32_WINNT", "0x0501")
+                    .define("_USING_V110_SDK71_", "1")
                     .file("curl/lib/vtls/openssl.c");
 
                 if let Some(path) = env::var_os("DEP_OPENSSL_INCLUDE") {

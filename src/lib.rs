@@ -53,6 +53,7 @@
 extern crate curl_sys;
 extern crate libc;
 extern crate socket2;
+extern crate parking_lot;
 
 #[cfg(need_openssl_probe)]
 extern crate openssl_probe;
@@ -64,7 +65,7 @@ extern crate schannel;
 
 use std::ffi::CStr;
 use std::str;
-use std::sync::Once;
+use parking_lot::Once;
 
 pub use error::{Error, FormError, MultiError, ShareError};
 mod error;
