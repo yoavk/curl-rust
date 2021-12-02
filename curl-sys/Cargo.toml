@@ -22,6 +22,7 @@ path = "lib.rs"
 libz-sys = "1.0.18"
 libc = "0.2.2"
 libnghttp2-sys = { optional = true, version = "0.1" }
+c-ares-sys = { optional=true, git = "https://github.com/yoavk/rust-c-ares", branch="expose-paths", version="5.2.0" }
 
 [dependencies.mesalink]
 version = "1.1.0-cratesio"
@@ -56,3 +57,4 @@ static-curl = []
 static-ssl = []
 spnego = []
 force-system-lib-on-osx = []
+c-ares = ["c-ares-sys"]

@@ -156,7 +156,6 @@ fn main() {
         .define("OS", "\"unknown\"") // TODO
         .define("HAVE_ZLIB_H", None)
         .define("HAVE_LIBZ", None)
-        .file("curl/lib/asyn-thread.c")
         .file("curl/lib/base64.c")
         .file("curl/lib/conncache.c")
         .file("curl/lib/connect.c")
@@ -323,7 +322,6 @@ fn main() {
 
     if windows {
         cfg.define("WIN32", None)
-            .define("USE_THREADS_WIN32", None)
             .define("HAVE_IOCTLSOCKET_FIONBIO", None)
             .define("USE_WINSOCK", None)
             .file("curl/lib/system_win32.c");
@@ -361,7 +359,6 @@ fn main() {
             .define("HAVE_STERRROR_R", None)
             .define("HAVE_SOCKETPAIR", None)
             .define("HAVE_STRUCT_TIMEVAL", None)
-            .define("USE_THREADS_POSIX", None)
             .define("RECV_TYPE_ARG2", "void*")
             .define("RECV_TYPE_ARG3", "size_t")
             .define("RECV_TYPE_ARG4", "int")
@@ -396,6 +393,21 @@ fn main() {
         cfg.define("SIZEOF_LONG", Some(&(width / 8).to_string()[..]));
 
         cfg.flag("-fvisibility=hidden");
+    }
+
+    if windows && cfg!(feature = "c-ares") {
+        cfg.define("USE_ARES", None)
+            .include(env::var("DEP_CARES_INCLUDE").unwrap())
+            .file("curl/lib/asyn-ares.c");
+        println!("cargo:rustc-link-search={}", env::var("DEP_CARES_LIB").unwrap());
+        println!("cargo:rustc-link-lib=static=libcares");
+    } else {
+        if windows {
+            cfg.define("USE_THREADS_WIN32", None);
+        } else {
+            cfg.define("USE_THREADS_POSIX", None);
+        }
+        cfg.file("curl/lib/asyn-thread.c");
     }
 
     cfg.compile("curl");
